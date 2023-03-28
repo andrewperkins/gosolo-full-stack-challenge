@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+let PEOPLE = [];
 
 router.get('/', async (req, res) => {
     try {
@@ -20,11 +21,15 @@ router.get('/', async (req, res) => {
         }
 
         // Fetch all people from SWAPI
-        while (next !== null) {
-            const response = await axios.get(swapi_url);
-            people = people.concat(response.data.results);
-            next = response.data.next;
-            swapi_url = response.data.next;
+        if (PEOPLE.length > 0) {
+            people = PEOPLE;
+        } else {
+            while (next !== null) {
+                const response = await axios.get(swapi_url);
+                people = people.concat(response.data.results);
+                next = response.data.next;
+                swapi_url = response.data.next;
+            }
         }
 
         if (sortBy) {
@@ -56,6 +61,7 @@ router.get('/', async (req, res) => {
             }
         }
 
+        PEOPLE = people;
         res.json(people);
     } catch (error) {
         console.error(error);
