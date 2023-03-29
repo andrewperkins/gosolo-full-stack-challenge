@@ -4,12 +4,14 @@ const URL = 'http://localhost:4000';
 
 function App() {
   const [selectedList, setSelectedList] = useState('')
+  const [sortBy, setSortBy] = useState('')
   const [data, setData] = useState([]);
 
   const getData = async () => {
-    const response = await fetch(`${URL}/${selectedList}`);
+    const url = `${URL}/${selectedList}${sortBy && selectedList == 'people' ? `?sortBy=${sortBy}` : ''}`
+    console.log(url)
+    const response = await fetch(url);
     const data = await response.json();
-    console.log(data)
     setData(data);
   };
 
@@ -20,7 +22,7 @@ function App() {
     }
     getData()
     
-  }, [selectedList])
+  }, [selectedList, sortBy])
 
   return (
     <div>
@@ -30,6 +32,16 @@ function App() {
         <option value="people">People</option>
         <option value="planets">Planets</option>
       </select>
+      {/* if selectedList is people */}
+      {selectedList === 'people' && (
+        <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
+          <option value="">Sort By</option>
+          <option value="name">Name</option>
+          <option value="height">Height</option>
+          <option value="mass">Mass</option>
+        </select>
+      )}
+
 
       <Table data={data} />
     </div>
