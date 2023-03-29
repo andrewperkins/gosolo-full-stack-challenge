@@ -4,9 +4,7 @@ import Planet from './types/Planets.type';
 import Table from './components/Table';
 import SelectedItem from './components/SelectedItem';
 
-// const URL = 'http://localhost:4000';
-const URL =
-    'https://andrewperkins-glowing-fishstick-pgx9q5v5rjv2r794-4000.preview.app.github.dev';
+const URL = 'http://localhost:4000';
 
 function App(): JSX.Element {
     const [selectedList, setSelectedList] = useState('');
