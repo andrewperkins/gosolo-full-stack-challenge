@@ -6,6 +6,7 @@ function App() {
   const [selectedList, setSelectedList] = useState('')
   const [sortBy, setSortBy] = useState('')
   const [data, setData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null)
 
   const getData = async () => {
     const url = `${URL}/${selectedList}${sortBy && selectedList == 'people' ? `?sortBy=${sortBy}` : ''}`
@@ -15,7 +16,13 @@ function App() {
     setData(data);
   };
 
+  function selectRow(item) {
+    console.log(item)
+    setSelectedItem(item)
+  }
+
   useEffect(() => {
+    setSelectedItem(null)
     if (selectedList === '') {
       setData([])
       return
@@ -43,12 +50,13 @@ function App() {
       )}
 
 
-      <Table data={data} />
+      <Table data={data} selectRow={selectRow}/>
+      {selectedItem && <SelectedItem data={selectedItem} type={selectedList} />}
     </div>
   )
 }
 
-function Table({ data }) {
+function Table({ data, selectRow }) {
   return (
     <table>
       <thead>
@@ -59,7 +67,7 @@ function Table({ data }) {
       </thead>
       <tbody>
         {data.map((item: { url: any; name: any; films: any; }) => (
-          <tr key={item.url}>
+          <tr key={item.url} onClick={(e) => selectRow(item)}>
             <td>{item.name}</td>
             <td>{item.films.length}</td>
           </tr>
@@ -67,6 +75,32 @@ function Table({ data }) {
       </tbody>
     </table>
   );
+}
+
+function SelectedItem({ data, type }) {
+  let info = null
+  if (type === 'people') {
+    info = (
+      <div>
+        <p>Name: {data.name}</p>
+        <p>Height: {data.height}</p>
+        <p>Mass: {data.mass}</p>
+        <p>Birth Year: {data.birth_year}</p>
+        <p>Eye Color: {data.eye_color}</p>
+      </div>
+    )
+  } else if (type === 'planets') {
+    info = (
+      <div>
+        <p>Name: {data.name}</p>
+        <p>Climate: {data.climate}</p>
+        <p>Terrain: {data.terrain}</p>
+        <p>Population: {data.population}</p>
+        <p>Diameter: {data.diamter}</p>
+      </div>
+    )
+  }
+  return info
 }
 
 export default App
